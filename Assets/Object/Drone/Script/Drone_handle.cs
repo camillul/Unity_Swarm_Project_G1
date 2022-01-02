@@ -14,13 +14,13 @@ public class Drone_handle : MonoBehaviour
 
     public bool IsOn = true;
 
-    private float speedxy = 8f;
-    private float speedz = 16f;
+    private float speedxy = 20f;
+    private float speedz = 20f;
 
     private Rigidbody rigidbodyComponent;
 
-    public bool IsLeader = false;
-    public bool IsAutonomous = false;
+   
+    public bool IsAutonomous = true;
 
 
     public float motor_Forward_Right = 0.0f;
@@ -33,20 +33,29 @@ public class Drone_handle : MonoBehaviour
     private Vector3 movement;
 
     public float gravity = 9.81f;
-    public float speed = 2f;
+    public float speed = 20f;
     private float lastDeltaTime;
 
     Quaternion startRotation;
     Quaternion endRotation;
 
-/*    public List<(Vector3, string)> ballPositions;
 
-    public List<RobotAI> otherRobots;*/
+    BoxCollider m_Collider;
+    public float m_ScaleX, m_ScaleY, m_ScaleZ;
+
+    public Vector3 boidCons;
+    public Vector3 preyCons;
+    public Vector3 resultant;
+
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbodyComponent = GetComponent<Rigidbody>();
+        m_Collider = GetComponent<BoxCollider>();
+        m_ScaleX = m_Collider.size.x;
+        m_ScaleY = m_Collider.size.y;
+        m_ScaleZ = m_Collider.size.z;
     }
 
     // Update is called once per frame
@@ -57,21 +66,24 @@ public class Drone_handle : MonoBehaviour
 
     void FixedUpdate()
     {
+        resultant = Vector3.zero;
 
-        Wheel_Update();
+        /*Wheel_Update();*/
         Rotation_Update();
 
-        if (IsLeader)
+        if(IsAutonomous)
         {
+            Debug.Log("Drone MANUAL CONTROL");
             Movement_Update();
-            ControlBehaviour();
         }
         else
         {
+            resultant += boidCons;
+            resultant += preyCons;
             SwarmBehaviour();
         }
 
-
+        
 
 
 
@@ -83,20 +95,20 @@ public class Drone_handle : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            if (IsOn == false)
+            if (IsAutonomous == false)
             {
-                IsOn = true;
+                IsAutonomous = true;
             }
             else
             {
-                IsOn = false;
+                IsAutonomous = false;
             }
         }
 
-        translationx = Input.GetAxis("Vertical");
-        translationz = -Input.GetAxis("Horizontal");
+        translationx = Input.GetAxis("drone_Vertical");
+        translationz = -Input.GetAxis("drone_Horizontal");
         thrusty = Input.GetAxis("VerticalZ");
-        Debug.Log("thrust = " + thrusty);
+        /*Debug.Log("thrust = " + thrusty);*/
         /*        if (Input.GetKeyDown(KeyCode.Z))
                 {
                     UpThrust = true;
@@ -111,22 +123,11 @@ public class Drone_handle : MonoBehaviour
 
     void Wheel_Update()
     {
-        if (IsOn == true)
-        {
+
             motor_Forward_Right = 100;
             motor_Forward_Left = 100;
             motor_Backward_Right = 100;
             motor_Backward_Left = 100;
-
-        }
-
-        else
-        {
-            motor_Forward_Right = 0;
-            motor_Forward_Left = 0;
-            motor_Backward_Right = 0;
-            motor_Backward_Left = 0;
-        }
 
     }
 
@@ -147,15 +148,12 @@ public class Drone_handle : MonoBehaviour
         /*   rigidbodyComponent.velocity.y */
 
         /*Rigibody way*/
-        if (IsOn)
 
-        {
-            Debug.Log("true isOn");
             rigidbodyComponent.velocity = new Vector3(translationx * speedxy, thrusty * speedz, translationz * speedxy);
-        }
-        else
-        { rigidbodyComponent.velocity = new Vector3(translationx * speedxy, rigidbodyComponent.velocity.y, translationz * speedxy); }
 
+/*        else
+        { rigidbodyComponent.velocity = new Vector3(translationx * speedxy, rigidbodyComponent.velocity.y, translationz * speedxy); }
+*/
 
 
 
@@ -204,6 +202,10 @@ public class Drone_handle : MonoBehaviour
     void SwarmBehaviour()
     {
 
+
+            rigidbodyComponent.velocity = resultant;
+
+
     }
 
 
@@ -212,6 +214,24 @@ public class Drone_handle : MonoBehaviour
 
     }
 
+
+    public IEnumerator go_to(Vector3 target)
+    {
+
+
+        float duration = 3f;
+        float time = 0;
+        Vector3 initial = transform.position;
+        while (time < duration)
+        {
+            transform.position = Vector3.Lerp(initial, target, time / duration);
+            time += Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        transform.position = target;
+        yield return null;
+        
+    }
 
 
 
