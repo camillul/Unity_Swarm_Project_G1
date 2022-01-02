@@ -38,7 +38,7 @@ public class Swarm_target : MonoBehaviour
                 Vector3 IntegrationError += 0.001f*lookAtPrey;
                 lookAtPrey += IntegrationError;*/
 
-                child.GetComponent<Drone_handle>().preyCons = 5f * lookAtPrey;
+                child.GetComponent<Drone_handle>().preyCons = 4f * lookAtPrey;
 
 
             }

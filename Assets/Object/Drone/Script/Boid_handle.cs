@@ -37,8 +37,8 @@ public class Boid_handle : MonoBehaviour
     void FixedUpdate()
     {
         v1 = Cohesion(localSwarm);
-        v2 = Separation(localSwarm) * 5f ;
-        v3 = Alignment(localSwarm);
+        v2 = Separation(localSwarm) * 2f ;
+        v3 = Alignment(localSwarm)*0.1f;
 
         vtot = (alpha * v1 + beta * v2 + gamma * v3);
         transform.parent.GetComponent<Drone_handle>().boidCons = vtot;
@@ -92,7 +92,7 @@ public class Boid_handle : MonoBehaviour
             else
             {
                 /*  Debug.DrawLine(transform.position, flockmates[i].transform.position, Color.white);*/
-                vcons += distance * 10;
+                vcons += distance / 0.1f ; ;
             }
 
         }
