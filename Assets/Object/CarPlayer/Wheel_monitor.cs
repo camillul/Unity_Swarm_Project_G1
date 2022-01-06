@@ -76,8 +76,8 @@ public class Wheel_monitor : MonoBehaviour
 
     {
     /*Comme toujours la physique est calculer dans la fixed update 
-     Cependant ici on a une implementation plus précise pour l'avancement du véhicule, en effet nous avons ici des roues qui ont proriété proche du réel (frottement, couple, rotation...)
-    et nous permet de simuler la commande d'une voiture
+     Cependant ici on a une implementation plus précise pour l'avancement du véhicule, en effet nous avons ici des roues qui ont proriété proche du réel (frottement, couple, ...)
+    et nous permet de simuler la commande d'une voiture.
      */
     if (!(IsAutonomous))
         {

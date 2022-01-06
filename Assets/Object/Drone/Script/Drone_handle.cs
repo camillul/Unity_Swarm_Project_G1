@@ -189,6 +189,7 @@ public class Drone_handle : MonoBehaviour
 
 
 
+/*Un IEnumerator est comparable à thread et/ou à du "tick" coding, permettant ainsi de réaliser*/
 
     public IEnumerator go_to(Vector3 target)
     {
