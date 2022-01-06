@@ -19,7 +19,7 @@ public class Boid_handle : MonoBehaviour
     float smooth;
     public List<GameObject> localSwarm;
     float collider_size;
-    public float offsetDist;
+    private float offsetDist = 5;
 
     void Start()
     {
@@ -36,15 +36,17 @@ public class Boid_handle : MonoBehaviour
 
     void FixedUpdate()
     {
+/*Ici on calcul les 3 loi relatif au comportement en boid qui retorunent un vecteur consigne 
+ la somme permet d'avoir le comportement en essaim  
+cette résultant est appliquer depuis Drone_handle ainsi nous réalisons un seul AddForce avec la résultante ici présente (potentiellement avec d'autre résultante si d'autre commande sont appélé depuis drone_handle*/
+
         v1 = Cohesion(localSwarm);
         v2 = Separation(localSwarm) * 2f ;
         v3 = Alignment(localSwarm)*0.1f;
 
         vtot = (alpha * v1 + beta * v2 + gamma * v3);
         transform.parent.GetComponent<Drone_handle>().boidCons = vtot;
-        Debug.DrawLine(transform.position, transform.position + vtot, Color.blue);
-        Debug.Log(vtot);
-        Debug.Log("v1 : " + alpha * v1 + "v2 : " + beta * v2 + "v3 : " + gamma * v3);
+
         
     }
 
@@ -84,18 +86,17 @@ public class Boid_handle : MonoBehaviour
         for (int i = 0; i < flockmates.Count; i++)
         {
             Vector3 distance =  - (flockmates[i].transform.position - transform.position);
-            if (!(distance.magnitude - 2*offsetDist <= 0.1))
+            if (!(distance.magnitude - 2*offsetDist <= 0.001f))
             {
-              /*  Debug.DrawLine(transform.position, flockmates[i].transform.position, Color.white);*/
+
                 vcons += distance / (float)Math.Pow(distance.magnitude - 2 * offsetDist, 3);
             }
             else
-            {
-                /*  Debug.DrawLine(transform.position, flockmates[i].transform.position, Color.white);*/
-                vcons += distance / 0.1f ; ;
+            { 
+                 vcons += distance / 0.000000001f ; ;
             }
-
         }
+
         Debug.DrawLine(transform.position, transform.position + vcons, Color.red);
         return vcons;
     }
@@ -103,6 +104,8 @@ public class Boid_handle : MonoBehaviour
 
     Vector3 Alignment(List<GameObject> flockmates)
     {
+
+/*Celle-ci n'as pas été codé encore*/
         if (flockmates.Count <= 1)
         {
             return new Vector3(0f, 0f, 0f);

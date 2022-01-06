@@ -61,6 +61,7 @@ public class Drone_handle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*L'aquisition des commande doit être dans l'update contrairement à la physique car on veut être fluide sur la prise de commande*/
         GetCommand();
     }
 
@@ -78,6 +79,7 @@ public class Drone_handle : MonoBehaviour
         }
         else
         {
+            /*en mode autonome : il ajoute toute les vecteur consigne dans la variable résultante et ensuite SwarmBehaviour s'occupe de réaliser la physique*/
             resultant += boidCons;
             resultant += preyCons;
             SwarmBehaviour();
@@ -108,15 +110,7 @@ public class Drone_handle : MonoBehaviour
         translationx = Input.GetAxis("drone_Vertical");
         translationz = -Input.GetAxis("drone_Horizontal");
         thrusty = Input.GetAxis("VerticalZ");
-        /*Debug.Log("thrust = " + thrusty);*/
-        /*        if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    UpThrust = true;
-                }
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    UpThrust = false;
-                }*/
+   
 
 
     }
@@ -140,22 +134,7 @@ public class Drone_handle : MonoBehaviour
     void Movement_Update()
     {
 
-
-        /*   Vector3 movement = new Vector3(translationx, rigidbodyComponent.velocity.y, translationz);*/
-        /* rigidbodyComponent.AddForce(movement);*/
-
-
-        /*   rigidbodyComponent.velocity.y */
-
-        /*Rigibody way*/
-
             rigidbodyComponent.velocity = new Vector3(translationx * speedxy, thrusty * speedz, translationz * speedxy);
-
-/*        else
-        { rigidbodyComponent.velocity = new Vector3(translationx * speedxy, rigidbodyComponent.velocity.y, translationz * speedxy); }
-*/
-
-
 
 
     }
@@ -209,15 +188,11 @@ public class Drone_handle : MonoBehaviour
     }
 
 
-    void ControlBehaviour()
-    {
-
-    }
 
 
     public IEnumerator go_to(Vector3 target)
     {
-
+/*permet de déplacer le drône d'un point A à un point B */
 
         float duration = 3f;
         float time = 0;

@@ -56,9 +56,10 @@ Une fois le projet terminée, les drône de surveillance routière s'adapterons 
 Voiture :
 [cross (Left, Rigth, Up, Down)] : permet de contrôlé le véhicule en accélération et direction
 [Space] : permet de freiner le véhicule.
+[v] : Activé/Désactivé le mode autonôme.
 
 Drone :
-[O] permet de rendre autonôme ou non l'essaim de drône
+[O]  Activé/Désactivé le mode autonôme.
 [I,J,K,L] : Permet de contrôler l'essaim de drône lorsque celui-ci n'est pas autonome sur les axes (x,y)
 [Z,S] : Permet de contrôler l'essaim de drône et son altitude.
 

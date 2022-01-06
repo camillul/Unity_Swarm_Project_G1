@@ -21,12 +21,12 @@ public class Camera_target_essaim : MonoBehaviour
         Vector3 viewPos = cam.WorldToViewportPoint(target.position);
         if (viewPos.x < 0 | viewPos.x > 1 | viewPos.y < 0 | viewPos.y > 1 | viewPos.z < 0)
         {
-            Debug.Log("Target out of range");
+          /*  Debug.Log("Target out of range");*/
             cam.targetTexture = myTexture_trash;
         }
         else
         {
-            Debug.Log("Ennemy Spotted !");
+           /* Debug.Log("Ennemy Spotted !");*/
             cam.targetTexture = myTexture;
         }
 
