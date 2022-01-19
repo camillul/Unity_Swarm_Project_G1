@@ -6,7 +6,8 @@ public class Swarm_target : MonoBehaviour
 {
     public GameObject prey;
     public Vector3 offset;
-    public Vector3 IntegrationError;
+    Vector3 IntegrationError;
+    bool targetHasStopped = true ;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,8 +28,14 @@ public class Swarm_target : MonoBehaviour
          On verifie aussi si celle-ci à un vitesse supérieur à 90 km/h    (le *3.6f permet de juste de gonfler le chiffre de la vitesse*/
         /*Debug.Log(prey.GetComponent<Rigidbody>().velocity.magnitude);*/
     
-            if (prey.GetComponent<Rigidbody>().velocity.magnitude * 3.6f >= 90)
+            if (prey.GetComponent<Rigidbody>().velocity.magnitude * 3.6f >= 90 | targetHasStopped == false)
             {
+            targetHasStopped = false;
+                if (prey.GetComponent<Rigidbody>().velocity.magnitude <= 0.01)
+                {
+                targetHasStopped = true;
+                }
+
             foreach (Transform child in transform)
             {
                 

@@ -46,7 +46,8 @@ public class Drone_handle : MonoBehaviour
     public Vector3 boidCons;
     public Vector3 preyCons;
     public Vector3 resultant;
-
+    public Vector3 random;
+    IEnumerator Coroutine_random;
 
     // Start is called before the first frame update
     void Start()
@@ -56,6 +57,11 @@ public class Drone_handle : MonoBehaviour
         m_ScaleX = m_Collider.size.x;
         m_ScaleY = m_Collider.size.y;
         m_ScaleZ = m_Collider.size.z;
+        random = UnityEngine.Random.insideUnitSphere;
+
+        Coroutine_random = Random_direction();
+        StartCoroutine(Coroutine_random);
+
     }
 
     // Update is called once per frame
@@ -70,19 +76,22 @@ public class Drone_handle : MonoBehaviour
         resultant = Vector3.zero;
 
         /*Wheel_Update();*/
-        Rotation_Update();
+        Rotation_Update2();
 
         if(IsAutonomous)
         {
             Debug.Log("Drone MANUAL CONTROL");
             Movement_Update();
+            
         }
         else
         {
             /*en mode autonome : il ajoute toute les vecteur consigne dans la variable résultante et ensuite SwarmBehaviour s'occupe de réaliser la physique*/
             resultant += boidCons;
             resultant += preyCons;
+            resultant += random;
             SwarmBehaviour();
+            
         }
 
         
@@ -141,7 +150,17 @@ public class Drone_handle : MonoBehaviour
 
 
 
+    void Rotation_Update2()
+    {
+        /*faire pencher le drone quand il avance
+       x et z sont inversé car si il se déplace en Z il se penche en x et inversement,
+      de plus nous allons calculer
+       */
+        Quaternion target = Quaternion.Euler((Math.Min(rigidbodyComponent.velocity.z / 30f, 1f)) * max_angle, 0.0f, -(Math.Min(rigidbodyComponent.velocity.x / 30f,1f))  * max_angle);
+        transform.rotation = Quaternion.Lerp(transform.rotation, target, Time.deltaTime * 5f);
 
+
+    }
 
 
     void Rotation_Update()
@@ -189,9 +208,10 @@ public class Drone_handle : MonoBehaviour
 
 
 
-/*Un IEnumerator est comparable à thread et/ou à du "tick" coding, permettant ainsi de réaliser*/
+/*Un IEnumerator est comparable à thread et/ou à du "tick" coding, permettant ainsi de réaliser des fonctions complexe non bloquante */
 
-    public IEnumerator go_to(Vector3 target)
+    public IEnumerator go_to(Vector3 target
+        )
     {
 /*permet de déplacer le drône d'un point A à un point B */
 
@@ -210,5 +230,18 @@ public class Drone_handle : MonoBehaviour
     }
 
 
+    IEnumerator Random_direction()
+    {
+        float update_rate = 6f;
+        float time = 0;
+        Vector3 initial = transform.position;
+        while (true)
+        {
+            random = UnityEngine.Random.insideUnitSphere*1.5f;
+            yield return new WaitForSeconds(update_rate);
+        }
 
+        yield return null;
+
+    }
 }

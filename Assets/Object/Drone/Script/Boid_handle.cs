@@ -40,8 +40,8 @@ public class Boid_handle : MonoBehaviour
  la somme permet d'avoir le comportement en essaim  
 cette résultant est appliquer depuis Drone_handle ainsi nous réalisons un seul AddForce avec la résultante ici présente (potentiellement avec d'autre résultante si d'autre commande sont appélé depuis drone_handle*/
 
-        v1 = Cohesion(localSwarm);
-        v2 = Separation(localSwarm) * 2f ;
+        v1 = Cohesion(localSwarm)*3f;
+        v2 = Separation(localSwarm) * 1.8f ;
         v3 = Alignment(localSwarm)*0.1f;
 
         vtot = (alpha * v1 + beta * v2 + gamma * v3);
@@ -89,7 +89,7 @@ cette résultant est appliquer depuis Drone_handle ainsi nous réalisons un seul A
             if (!(distance.magnitude - 2*offsetDist <= 0.001f))
             {
 
-                vcons += distance / (float)Math.Pow(distance.magnitude - 2 * offsetDist, 3);
+                vcons += distance /  (float)Math.Pow((distance.magnitude - 2 * offsetDist)/1.5f, 3);
             }
             else
             { 
@@ -97,7 +97,7 @@ cette résultant est appliquer depuis Drone_handle ainsi nous réalisons un seul A
             }
         }
 
-        Debug.DrawLine(transform.position, transform.position + vcons, Color.red);
+        Debug.DrawLine(transform.position, transform.position + vcons*5, Color.red);
         return vcons;
     }
 

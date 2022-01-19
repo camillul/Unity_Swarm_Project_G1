@@ -18,12 +18,12 @@ public class Wheel_monitor : MonoBehaviour
     public float speed;
 
     private float AutoSteer = 0;
-    private float AutoAcc = 0.3f;
+    private float AutoAcc = 0.8f;
     public WheelCollider front_left;
     public WheelCollider front_right;
     public WheelCollider rear_left;
     public WheelCollider rear_right;
-    public float maxSpeed = 40f;
+    public float maxSpeed = 50f;
     public float Torque = 1000f;
     public float brakeTorque = 2000f;
     public float WheelAngleMax = 35f;
@@ -34,7 +34,7 @@ public class Wheel_monitor : MonoBehaviour
     public Vector3 com = new Vector3(0f, -0.1f, 0f);
     public Rigidbody rb;
 
-
+    public Slider SlideSpeed;
 
 
     // Start is called before the first frame update
@@ -87,41 +87,46 @@ public class Wheel_monitor : MonoBehaviour
 
     else 
         {
-            AutoSteer = 0;
-            Vector3 left = transform.TransformDirection(2.8f*Vector3.left + Vector3.down);
-            Vector3 right = transform.TransformDirection(2.8f * Vector3.right + Vector3.down);
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position + rayOffset, left, out hit, Mathf.Infinity))
-            {
-                Debug.Log(hit.collider.gameObject.name);
-                if (!(hit.collider.gameObject.tag == "Road_Left"))
-                {
-
-                    Debug.DrawRay(transform.position + rayOffset, left * hit.distance, Color.yellow);
-                    AutoSteer =-1.5f;
-                    Debug.Log("Je vois pas la gauche");
-                }
-            }
-            if (Physics.Raycast(transform.position + rayOffset, right, out hit, Mathf.Infinity))
-            { 
-                if (!(hit.collider.gameObject.tag == "Road_Right"))
-                {
-                    Debug.DrawRay(transform.position + rayOffset, right * hit.distance, Color.yellow);
-                    AutoSteer = 1.5f;
-                    Debug.Log("Je vois pas la droite");
-
-                   
-
-                }
-            }
-            AutoSteer = Math.Min(Math.Max(AutoSteer, -1.5f), 1.5f);
-            HandleEngineAuto();
-            HandleSteeringAuto();
+            Autosteering();
         }
 
    
         
         
+    }
+
+    private void Autosteering()
+    {
+        AutoSteer = 0;
+        Vector3 left = transform.TransformDirection(2.8f * Vector3.left + Vector3.down);
+        Vector3 right = transform.TransformDirection(2.8f * Vector3.right + Vector3.down);
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + rayOffset, left, out hit, Mathf.Infinity))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (!(hit.collider.gameObject.tag == "Road_Left"))
+            {
+
+                Debug.DrawRay(transform.position + rayOffset, left * hit.distance, Color.yellow);
+                AutoSteer = -0.7f;
+                Debug.Log("Je vois pas la gauche");
+            }
+        }
+        if (Physics.Raycast(transform.position + rayOffset, right, out hit, Mathf.Infinity))
+        {
+            if (!(hit.collider.gameObject.tag == "Road_Right"))
+            {
+                Debug.DrawRay(transform.position + rayOffset, right * hit.distance, Color.yellow);
+                AutoSteer = 0.7f;
+                Debug.Log("Je vois pas la droite");
+
+
+
+            }
+        }
+        AutoSteer = Math.Min(Math.Max(AutoSteer, -1.5f), 1.5f);
+        HandleEngineAuto();
+        HandleSteeringAuto();
     }
 
 
@@ -158,23 +163,10 @@ public class Wheel_monitor : MonoBehaviour
         front_left.brakeTorque = 0;
         front_right.brakeTorque = 0;
 
-
-
-        Debug.Log("Accélération");
-      
         front_right.motorTorque = AutoAcc * Torque * Time.deltaTime;
         front_left.motorTorque = front_right.motorTorque;
-        /*        Debug.Log(front_left.motorTorque);
-                Debug.Log(front_right.motorTorque);*/
 
 
-
-        if (speed >= maxSpeed)
-        {
-      
-            front_left.motorTorque = 0;
-            front_right.motorTorque = 0;
-        }
         if (isBraking)
         {
             rear_left.brakeTorque = brakeTorque;
@@ -190,6 +182,28 @@ public class Wheel_monitor : MonoBehaviour
             front_left.brakeTorque = 0;
             front_right.brakeTorque = 0;
         }
+
+        
+        if (speed >= maxSpeed)
+        {
+            Debug.Log("Reach max");
+            rear_left.brakeTorque = brakeTorque;
+            rear_right.brakeTorque = brakeTorque;
+            front_left.brakeTorque = brakeTorque;
+            front_right.brakeTorque = brakeTorque;
+            front_left.motorTorque = 0;
+            front_right.motorTorque = 0;
+            /*AutoAcc = 0;*/
+        }
+
+
+
+
+
+
+
+
+        
 
     }
     private void HandleEngine()
@@ -236,7 +250,10 @@ public class Wheel_monitor : MonoBehaviour
 
     }
 
-
+    public void OnChangeValue()
+    {
+        maxSpeed = SlideSpeed.value;
+    }
 
 
 }

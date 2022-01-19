@@ -26,7 +26,12 @@ public class Swarm_Eyes : MonoBehaviour
     {
     int nodeCount = RoadSpline.transform.childCount;
     int eyeCount = transform.childCount;
+        Debug.Log("nodeCount");
 
+        Debug.Log(nodeCount);
+
+        Debug.Log("eyeCount");
+        Debug.Log(eyeCount);
     /* en temps normal il faudrait calculer / determiner l'interpolation entre chaque noeud cependant nous allons simplifier et simplement considérer des droites entre chaque noeuds */
     if (eyeCount < nodeCount)
     {
